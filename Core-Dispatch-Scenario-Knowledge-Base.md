@@ -72,8 +72,13 @@ Here is the fully translated English version of the knowledge base for your depl
 <br>`product_title`<br>
 
 <br>*(Extracted from user input)* | Yes |
-| **Step 3** | Home Agent | `<@U0C0GNNSLV8>` | Hand-off: Configure New Home access whitelist. Target environment: DEV. Target list: {{step_1_user_list}}. `<@U0C0GNNSLV8>` | `step_1_user_list` | Yes |
-| **Step 4** | Engagement Agent | `<@U0C01CP09V5>` | Hand-off: Configure APP Push notification. Target list: {{step_1_user_list}}. Copy requirements: Both Group A ({{ab_group_a_incentive}}) and Group B ({{ab_group_b_incentive}}) must generate Spanish copy highlighting the incentive. `<@U0C01CP09V5>` | `step_1_user_list`<br>
+| **Step 3** | Content Delivery Agent | `<@U0AD0C1MYE9>` | Hand-off: Configure the Home page pop-up. Target environment: DEV. Target list: {{step_1_user_list}}. Copy requirements: Both Group A ({{ab_group_a_incentive}}) and Group B ({{ab_group_b_incentive}}) must generate Spanish copy highlighting their respective incentive. `<@U0AD0C1MYE9>` | `step_1_user_list`<br>
+
+<br>`ab_group_a_incentive`<br>
+
+<br>`ab_group_b_incentive` | Yes |
+| **Step 4** | Home Agent | `<@U0C0GNNSLV8>` | Hand-off: Configure New Home access whitelist. Target environment: DEV. Target list: {{step_1_user_list}}. `<@U0C0GNNSLV8>` | `step_1_user_list` | Yes |
+| **Step 5** | Engagement Agent | `<@U0C01CP09V5>` | Hand-off: Configure APP Push notification. Target list: {{step_1_user_list}}. Copy requirements: Both Group A ({{ab_group_a_incentive}}) and Group B ({{ab_group_b_incentive}}) must generate Spanish copy highlighting the incentive. `<@U0C01CP09V5>` | `step_1_user_list`<br>
 
 <br>`ab_group_a_incentive`<br>
 
