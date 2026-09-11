@@ -53,8 +53,16 @@ Here is the fully translated English version of the knowledge base for your depl
 * **Scenario Description:** Conduct a customized AB group test and send a Push notification for new users with a 0 deposit amount.
 
 > `{{assignee_tag}}` is the mention tag of the row's Target Agent, resolved from the
-> Downstream Agent Roster in `AGENTS.md`. It is never hardcoded here, and it is sent as
-> plain text with no backticks or other Markdown.
+> Downstream Agent Roster in `AGENTS.md`. It is never hardcoded here. Substitute the
+> roster value character for character — the full `<@USER_ID>` form, angle brackets
+> included, as plain text with no backticks or other Markdown. `@USER_ID` and a bare
+> `USER_ID` are inert and notify nobody.
+>
+> Step 1 returns one audience already split into two groups. It is exposed downstream as
+> three variables: `step_1_user_list` (the combined audience, for steps that do not
+> differentiate), plus `step_1_group_a_list` and `step_1_group_b_list` (the per-group
+> members). Any step that produces A/B copy must consume the two per-group lists, so the
+> receiving agent knows exactly who gets which variant.
 
 | Step | Target Agent | Channel 2 (Slack Tool) Independent Dispatch Instruction Template (Mention Strictly Appended) | Injected Dependencies | Blocking |
 | --- | --- | --- | --- | --- |
@@ -82,17 +90,45 @@ Here is the fully translated English version of the knowledge base for your depl
 
 <br>1. Basic Config: Environment DEV, Action: Add, Target Status: Full release, Effective/Expiration Date: Long-term.<br>
 
-<br>2. Audience: Target list {{step_1_user_list}}. Group A and Group B are already split upstream; deliver the same New Home pop-up to both groups, differentiated only by copy variant.<br>
+<br>2. Audience — the two groups must be handed over as two explicit, itemised lists, never as a combined list or a headcount:<br>
+
+<br>&nbsp;&nbsp;- Group A members: {{step_1_group_a_list}}<br>
+
+<br>&nbsp;&nbsp;- Group B members: {{step_1_group_b_list}}<br>
+
+<br>Enumerate every user ID in full under its own group. The split is already decided upstream — do not re-split, re-balance, or reassign anyone. Both groups receive the same New Home pop-up, differentiated only by copy variant.<br>
 
 <br>3. Copy Requirements: Both Group A ({{ab_group_a_incentive}}) and Group B ({{ab_group_b_incentive}}) must generate Spanish copy highlighting their respective incentive.<br>
 
-<br>4. Rollout Scope: None. {{assignee_tag}} | `step_1_user_list`<br>
+<br>4. Rollout Scope: None. {{assignee_tag}} | `step_1_group_a_list`<br>
+
+<br>*(Group A members from the Step 1 audience, itemised in full)*<br>
+
+<br>`step_1_group_b_list`<br>
+
+<br>*(Group B members from the Step 1 audience, itemised in full)*<br>
 
 <br>`ab_group_a_incentive`<br>
 
 <br>`ab_group_b_incentive` | Yes |
 | **Step 4** | Home Agent | Hand-off: Configure New Home access whitelist. Target environment: DEV. Target list: {{step_1_user_list}}. {{assignee_tag}} | `step_1_user_list` | Yes |
-| **Step 5** | Engagement Agent | Hand-off: Configure APP Push notification. Target list: {{step_1_user_list}}. Copy requirements: Both Group A ({{ab_group_a_incentive}}) and Group B ({{ab_group_b_incentive}}) must generate Spanish copy highlighting the incentive. {{assignee_tag}} | `step_1_user_list`<br>
+| **Step 5** | Engagement Agent | Hand-off: Please help execute the following APP Push notification configuration.<br>
+
+<br>1. Audience — the two groups must be handed over as two explicit, itemised lists, never as a combined list or a headcount:<br>
+
+<br>&nbsp;&nbsp;- Group A members: {{step_1_group_a_list}}<br>
+
+<br>&nbsp;&nbsp;- Group B members: {{step_1_group_b_list}}<br>
+
+<br>Enumerate every user ID in full under its own group. The split is already decided upstream — do not re-split, re-balance, or reassign anyone.<br>
+
+<br>2. Copy Requirements: Both Group A ({{ab_group_a_incentive}}) and Group B ({{ab_group_b_incentive}}) must generate Spanish copy highlighting their respective incentive. {{assignee_tag}} | `step_1_group_a_list`<br>
+
+<br>*(Group A members from the Step 1 audience, itemised in full)*<br>
+
+<br>`step_1_group_b_list`<br>
+
+<br>*(Group B members from the Step 1 audience, itemised in full)*<br>
 
 <br>`ab_group_a_incentive`<br>
 

@@ -47,7 +47,11 @@ stepped outside your role. Stop and dispatch instead.
 
 ## Escalation Posture
 
-Stop and hand over to a human when:
+The human you hand over to is the **resolved requester for the current thread** — the
+person on the `/new` command line at the thread root. There is no separate escalation
+roster to look up.
+
+Stop and hand over when:
 
 - A downstream agent has failed to return a complete reply after **3 follow-up rounds**.
 - A mandatory parameter is missing and the user has not supplied it on request.

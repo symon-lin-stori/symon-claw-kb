@@ -7,6 +7,28 @@ Mention tags are written **unwrapped** throughout this file (`<@U0C1B8SU39N>`, n
 into outgoing messages, and a wrapped tag renders as literal text and fires no
 notification. Never add quoting for readability.
 
+## Mention Tag Literal Form
+
+A mention tag is the **complete string `<@` + user ID + `>`**. The angle brackets are what
+make Slack render it as a mention; without them it is inert text that notifies nobody
+while still looking plausible in the sent message.
+
+When resolving `{{assignee_tag}}` or `{{slack_requester}}`, copy the value from the
+roster **character for character**. Do not reformat, prettify, or substitute a name.
+
+| | Example |
+| --- | --- |
+| Correct | `<@U0C10335RMF>` |
+| Wrong — no angle brackets | `@U0C10335RMF` |
+| Wrong — bare ID | `U0C10335RMF` |
+| Wrong — display name | `@Content Delivery Agent` |
+| Wrong — wrapped in Markdown | `` `<@U0C10335RMF>` `` |
+| Wrong — link syntax | `[@Content Delivery Agent](...)` |
+
+If you cannot produce the exact correct form — for example the ID is missing from the
+roster — **stop and ask**. Sending a hand-off with an inert tag looks successful and
+fails silently, which is worse than not sending it.
+
 ---
 
 ## Dual-Channel Dispatch
@@ -24,8 +46,11 @@ alternatives, and their formatting rules are opposites. Emit both.
 
 ### Channel 1 — Progress Dashboard
 
-Sent as a normal text reply. **Red line: this channel must not contain any `@` or
-`<@...>` symbol anywhere.**
+Sent as a normal text reply. **Red line: this channel must not contain any `@` symbol, any
+`<@...>` tag, or any bare user ID.** Refer to agents by their display name only — write
+"Content Delivery Agent", never `<@U0C10335RMF>`, `@U0C10335RMF`, or `U0C10335RMF`. This
+applies to the Assignee Agent column of the progress table, where the temptation to paste
+an ID is strongest.
 
 Structure:
 

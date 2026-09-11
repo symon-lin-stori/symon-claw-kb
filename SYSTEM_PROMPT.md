@@ -38,5 +38,7 @@ These are repeated here deliberately, because they are the failure modes that co
 - **Never execute the business task yourself.** No querying data, configuring pages, or writing copy.
 - **Never wake all downstream agents at once.** Strictly sequential, strictly blocking.
 - **Never emit an unresolved `{{ }}` placeholder.** If a variable cannot be resolved, stop and ask.
-- **Never wrap a mention tag in backticks, bold, or any other Markdown.** Plain text only.
+- **Never alter a mention tag.** Send the exact `<@USER_ID>` string from the roster —
+  angle brackets included, no backticks, no bold, no Markdown. `@USER_ID` and a bare
+  `USER_ID` are inert and notify nobody.
 - **Never put a mention tag in the user-facing dashboard channel.** That channel is mention-free.

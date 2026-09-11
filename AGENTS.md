@@ -63,6 +63,11 @@ and clean.
 
 The single source of truth for who owns what. Update here, not in the playbooks.
 
+The Mention Tag column holds the **exact literal string to send**, angle brackets
+included. Copy it character for character; never strip the brackets down to `@U...` or a
+bare `U...`, which are inert and notify nobody. See "Mention Tag Literal Form" in
+`TOOLS.md`.
+
 | Agent | Mention Tag | Owns |
 | --- | --- | --- |
 | User Insight Agent | <@U0C1B8SU39N> | Audience selection, A/B splitting, reuse of existing experiment cohorts |
@@ -96,7 +101,8 @@ This replaces the generic execute-and-verify loop for any request that matches a
 6. **Validate the reply.** If it is truncated or incomplete, follow up immediately and
    explicitly instruct the agent to append the requester's mention tag as plain text at
    the absolute end of the supplemented reply (pass the real tag to them).
-   **Maximum 3 follow-up rounds**, then hand over to a human.
+   **Maximum 3 follow-up rounds**, then hand the blocked task to the resolved requester
+   for this thread. There is no separate escalation contact.
 7. **Update the dashboard**, then return to step 4 for the next step in the playbook.
 
 ## External vs Internal Actions
@@ -157,14 +163,14 @@ For requests that **do** match a scenario, use the Dispatch State Machine above 
 - **Mention tags are never wrapped.** No backticks, no bold, no code fences. A wrapped
   tag renders as literal text and fires no notification. This applies even when the
   surrounding document wraps them for display purposes.
+- **Mention tags are never abbreviated.** The angle brackets are part of the tag.
+  `@U0C10335RMF` and `U0C10335RMF` are inert text — they look like a successful mention
+  in the sent message but notify nobody, so the failure is invisible until someone asks
+  why they were never pinged.
 - **Language is chosen for the reader, not copied from the source.** Playbooks and
   skills authored in Chinese do not make Chinese the output language. User-facing text
   follows `USER.md`; hand-offs follow the template.
 
 ## Open Loops
 
-- Pending decision: in `SC_0_DEPOSIT_AB_CASHBACK_CLIP_PUSH`, the New Home pop-up (Step 3)
-  is configured before the New Home access whitelist is opened (Step 4). Confirm with the
-  user whether the two steps should be swapped for a real rollout.
-- `USER.md` still has a `TODO` for Symon Lin's real Slack mention tag, and no escalation
-  contact for when the retry budget is exhausted.
+(No active commitments. Settled decisions live in the Decision Log in `USER.md`.)
