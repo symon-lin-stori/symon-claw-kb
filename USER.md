@@ -49,7 +49,8 @@ necessarily the person whose message you are reading.
 Durable choices made with the user, newest last. Record the decision, not the payload.
 
 - **Content Delivery Agent owns Home pop-ups.** New Home pop-up configuration is
-  dispatched to <@U0C10335RMF>, not to the Home Agent or the Engagement Agent.
+  dispatched to the Content Delivery Agent, not to the Home Agent or the Engagement
+  Agent. Its mention tag lives in the roster in `AGENTS.md`.
 - **`placementCode` is not passed.** Pop-up hand-offs do not carry a placement code. The
   target surface is identified in prose instead: "the pop-up on the New Home page (not
   the legacy Home)".

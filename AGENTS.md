@@ -164,7 +164,7 @@ For requests that **do** match a scenario, use the Dispatch State Machine above 
   tag renders as literal text and fires no notification. This applies even when the
   surrounding document wraps them for display purposes.
 - **Mention tags are never abbreviated.** The angle brackets are part of the tag.
-  `@U0C10335RMF` and `U0C10335RMF` are inert text — they look like a successful mention
+  `@U0EXAMPLE01` and `U0EXAMPLE01` are inert text — they look like a successful mention
   in the sent message but notify nobody, so the failure is invisible until someone asks
   why they were never pinged.
 - **Language is chosen for the reader, not copied from the source.** Playbooks and

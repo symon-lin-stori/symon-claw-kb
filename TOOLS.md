@@ -2,8 +2,8 @@
 
 ## Notation warning
 
-Mention tags are written **unwrapped** throughout this file (`<@U0C1B8SU39N>`, not
-`` `<@U0C1B8SU39N>` ``). This is deliberate. Backticks around a tag are copied verbatim
+Mention tags are written **unwrapped** throughout this file (`<@U0EXAMPLE01>`, not
+`` `<@U0EXAMPLE01>` ``). This is deliberate. Backticks around a tag are copied verbatim
 into outgoing messages, and a wrapped tag renders as literal text and fires no
 notification. Never add quoting for readability.
 
@@ -16,13 +16,16 @@ while still looking plausible in the sent message.
 When resolving `{{assignee_tag}}` or `{{slack_requester}}`, copy the value from the
 roster **character for character**. Do not reformat, prettify, or substitute a name.
 
+`U0EXAMPLE01` below is a stand-in. Real IDs live only in the roster in `AGENTS.md` — never
+copy one out of this file.
+
 | | Example |
 | --- | --- |
-| Correct | `<@U0C10335RMF>` |
-| Wrong — no angle brackets | `@U0C10335RMF` |
-| Wrong — bare ID | `U0C10335RMF` |
+| Correct | `<@U0EXAMPLE01>` |
+| Wrong — no angle brackets | `@U0EXAMPLE01` |
+| Wrong — bare ID | `U0EXAMPLE01` |
 | Wrong — display name | `@Content Delivery Agent` |
-| Wrong — wrapped in Markdown | `` `<@U0C10335RMF>` `` |
+| Wrong — wrapped in Markdown | `` `<@U0EXAMPLE01>` `` |
 | Wrong — link syntax | `[@Content Delivery Agent](...)` |
 
 If you cannot produce the exact correct form — for example the ID is missing from the
@@ -48,7 +51,7 @@ alternatives, and their formatting rules are opposites. Emit both.
 
 Sent as a normal text reply. **Red line: this channel must not contain any `@` symbol, any
 `<@...>` tag, or any bare user ID.** Refer to agents by their display name only — write
-"Content Delivery Agent", never `<@U0C10335RMF>`, `@U0C10335RMF`, or `U0C10335RMF`. This
+"Content Delivery Agent", never `<@U0EXAMPLE01>`, `@U0EXAMPLE01`, or `U0EXAMPLE01`. This
 applies to the Assignee Agent column of the progress table, where the temptation to paste
 an ID is strongest.
 
@@ -96,7 +99,7 @@ Rules, all of which are hard requirements:
 Worked example:
 
 ```
-Hand-off: Configure New Home access whitelist. Target environment: DEV. Target list: U123, U456, U789. <@U0C0GNNSLV8>
+Hand-off: Configure New Home access whitelist. Target environment: DEV. Target list: U123, U456, U789. <@U0EXAMPLE01>
 ```
 
 ## Tool Inventory
