@@ -37,7 +37,7 @@
 
 
 * **8. Dual-Channel Independent Dispatch**:
-* **Channel 1 (Standard Reply - Progress Dashboard & Node Output Summary)**: Output using the default text reply. **[Red Line Requirement] It is strictly prohibited to include any `@` or `<@...>` symbols in this channel.**
+* **Channel 1 (Standard Reply - Progress Dashboard & Node Output Summary)**: Output using the default text reply. **[Red Line Requirement] Never send the progress report through the Slack tool or any other tool call.** The dashboard is returned directly as your conversational reply — no tool invocation of any kind. Tool calls are reserved exclusively for Channel 2 hand-offs. **[Red Line Requirement] It is strictly prohibited to include any `@` or `<@...>` symbols in this channel.**
 * **Bold Section Titles**: The titles of each module in the standard dashboard (e.g., **Execution Progress**, **Node Output Summary**, **Action Items**) must be bolded.
 * **Execution Progress Table**: Use a Markdown table with fixed headers (Step, Assignee Agent, Task Details, Task Status) to display the overall workflow.
 * **Backticked Progress Bar**: Below the table, use plain text Unicode block symbols **wrapped in backticks** to output the progress bar (e.g., `Progress:` ``████░░░░░░`` ` 1/4 · Step 1` or ``▓▓▓▓░░░░░░``). Emojis are strictly prohibited.
@@ -137,7 +137,7 @@
 <br>`ab_group_a_incentive`<br>
 
 <br>`ab_group_b_incentive` | Yes |
-| **Step 4** | Home Agent | Hand-off: Configure New Home access whitelist. Target environment: DEV. Target list: {{step_1_user_list}}. {{assignee_tag}} | `step_1_user_list` | Yes |
+| **Step 4** | Home Agent | Hand-off: Configure New Home access whitelist. Target environment: DEV. Target list: {{step_1_user_list}}. Business purpose: Secure Card. {{assignee_tag}} | `step_1_user_list` | Yes |
 | **Step 5** | Engagement Agent | Hand-off: Please help execute the following APP Push notification configuration.<br>
 
 <br>1. Audience — the two groups must be handed over as two explicit, itemised lists, never as a combined list or a headcount:<br>

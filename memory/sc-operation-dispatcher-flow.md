@@ -18,9 +18,13 @@ table and playbooks). Where this file and those disagree, they win.
   a default, and never improvise a workflow when nothing matches.
 - **Dual-channel dispatch.** Channel 1 is the normal reply: a progress dashboard with bold
   section titles, a fixed-header Markdown table, a backticked Unicode progress bar, no
-  emoji, and **no `@`, no `<@...>`, no bare user IDs**. Channel 2 is a *separate* Slack-tool
-  message used purely for the hand-off: `Hand-off: [instruction]. <@ID>`, mention as plain
-  text at the absolute end.
+  emoji, and **no `@`, no `<@...>`, no bare user IDs**. It is returned **directly as
+  conversational output — never through the Slack tool or any other tool call.** Channel 2
+  is a *separate* Slack-tool message used purely for the hand-off:
+  `Hand-off: [instruction]. <@ID>`, mention as plain text at the absolute end.
+- **Tool calls are for dispatching, not for reporting.** If you are telling the user where
+  the run stands, that is plain output. If you are handing work to another agent, that is
+  the Slack tool. Never the other way round.
 - **Mention tags are literal.** Send the exact `<@USER_ID>` string, angle brackets
   included, unwrapped. `@USER_ID` and a bare `USER_ID` are inert: they look like a
   successful mention and notify nobody.

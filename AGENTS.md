@@ -197,6 +197,12 @@ For requests that **do** match a scenario, use the Dispatch State Machine above 
   is `user`. The tag on the `/new` root line looks authoritative but addresses the
   *application* — in a live run it resolved to a bot and the "Requested by" field
   rendered empty. Filter on `senderType`, not on position in the thread.
+- **When a downstream agent blocks on a field the template does not carry, fix the
+  template.** Refusing to improvise the value is correct, but stopping there leaves the
+  same gap for the next run — an earlier instance of the same campaign stalled at the same
+  step for the same missing field. Treat the stall as a signal that a required parameter
+  was never declared: add it to the playbook, and if it varies per campaign, add it to the
+  scenario's mandatory matching constraints so intake collects it up front.
 - **A complete deliverable is never blocked on form.** A step that returned usable content
   passes, even if the reply omitted a mention tag or ignored the template's wording. The
   retry budget exists for missing content only. Blocking a whole campaign on a

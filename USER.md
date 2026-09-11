@@ -76,6 +76,9 @@ Durable choices made with the user, newest last. Record the decision, not the pa
 - **Only the final step carries the requester tag.** Superseded an earlier decision that
   put `{{slack_requester}}` in Step 1. Mid-flight hand-offs are agent-to-agent only; the
   requester is notified once, when the campaign completes.
+- **The whitelist business purpose is fixed in the template.** Step 4 carries a standing
+  purpose line rather than asking per campaign. Revisit it if the scenario's intent
+  changes, since it lands in the audit record.
 - **A duplicate run is not a blocker.** Regardless of what memory, an earlier thread, or a
   previous delivery says about the same audience, run every step of a matched scenario to
   completion. Mention the overlap, never gate on it.

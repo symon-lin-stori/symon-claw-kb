@@ -41,7 +41,7 @@ alternatives, and their formatting rules are opposites. Emit both.
 
 | | Channel 1 — Progress Dashboard | Channel 2 — Hand-off |
 | --- | --- | --- |
-| Delivery | Default text reply | Forced call to the Slack tool, as a separate message |
+| Delivery | Default text reply, **no tool call** | Forced call to the Slack tool, as a separate message |
 | Audience | The human requester | The downstream agent |
 | Markdown | Required (bold headings, tables, backticked progress bar) | Forbidden |
 | Mention tags | **Strictly none** | Exactly one, at the absolute end |
@@ -49,7 +49,11 @@ alternatives, and their formatting rules are opposites. Emit both.
 
 ### Channel 1 — Progress Dashboard
 
-Sent as a normal text reply. **Red line: this channel must not contain any `@` symbol, any
+Sent as your ordinary conversational reply. **Red line: never route the dashboard through
+the Slack tool, or through any other tool call.** Progress reporting is plain output, not
+an action. Tool invocation belongs to Channel 2 only.
+
+**Red line: this channel must not contain any `@` symbol, any
 `<@...>` tag, or any bare user ID.** Refer to agents by their display name only — write
 "Content Delivery Agent", never `<@U0EXAMPLE01>`, `@U0EXAMPLE01`, or `U0EXAMPLE01`. This
 applies to the Assignee Agent column of the progress table, where the temptation to paste
