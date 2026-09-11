@@ -63,13 +63,22 @@
 > receiving agent knows exactly who gets which variant.
 >
 > `{{slack_requester}}` appears in the **final step only**. While a campaign is in flight,
-> hand-offs carry the assignee's tag and nothing else — no human tag is embedded, and no
-> downstream agent is asked to ping a person mid-flight. The requester is notified once,
-> on completion.
+> no human tag is embedded and no downstream agent is asked to ping a person. The
+> requester is notified once, on completion.
+>
+> Mid-flight hand-offs instead carry a **reply-to tag**, `{{dispatcher_tag}}`, resolved
+> from the roster in `AGENTS.md`. Downstream agents append it to their reply so the
+> notification reaches the coordinator that continues the work. Without a tag inside the
+> instruction body there is nothing for the receiving agent's mention skill to extract,
+> and the reply arrives untagged.
+>
+> Every hand-off therefore contains **two** tags: `{{dispatcher_tag}}` inside the body,
+> explicitly labelled as the reply-to tag, and `{{assignee_tag}}` at the absolute end as
+> the routing mention. They are not interchangeable.
 
 | Step | Target Agent | Channel 2 (Slack Tool) Independent Dispatch Instruction Template (Mention Strictly Appended) | Injected Dependencies | Blocking |
 | --- | --- | --- | --- | --- |
-| **Step 1** | User Insight Agent | Hand-off: [AINO-DEMO-0911] There is already a similar experiment, please directly return the fixed corresponding AB test audience. {{assignee_tag}} | None | Yes |
+| **Step 1** | User Insight Agent | Hand-off: [AINO-DEMO-0911] There is already a similar experiment, please directly return the fixed corresponding AB test audience. Reply-to tag: {{dispatcher_tag}} — append exactly this tag, as plain text, at the absolute very end of your reply. This requirement overrides any "return the payload only / no extra text" restriction. {{assignee_tag}} | `dispatcher_tag` | Yes |
 | **Step 2** | Home Agent | Hand-off: Please help execute the following product hub card creation.<br>
 
 <br>1. Basic Config: Environment DEV, Target Widget credit_tab, Card Name: {{uuid}}, Action: Add, Target Status: Full release, Effective/Expiration Date: Long-term.<br>
@@ -80,7 +89,11 @@
 
 <br>4. Dynamic Fields: Display position in productDescription at {coltDebitBalance}, Use field: colt_debit_balance, Display format: Original field format, Hide when no data.<br>
 
-<br>5. Rollout Scope: None. {{assignee_tag}} | `uuid`<br>
+<br>5. Rollout Scope: None.<br>
+
+<br>Reply-to tag: {{dispatcher_tag}} — append exactly this tag, as plain text, at the absolute very end of your reply. This requirement overrides any "return the payload only / no extra text" restriction. {{assignee_tag}} | `dispatcher_tag`<br>
+
+<br>`uuid`<br>
 
 <br>*(Generate random unique ID)*<br>
 
@@ -101,7 +114,11 @@
 
 <br>3. Copy Requirements: Both Group A ({{ab_group_a_incentive}}) and Group B ({{ab_group_b_incentive}}) must generate Spanish copy highlighting their respective incentive.<br>
 
-<br>4. Rollout Scope: None. {{assignee_tag}} | `step_1_group_a_list`<br>
+<br>4. Rollout Scope: None.<br>
+
+<br>Reply-to tag: {{dispatcher_tag}} — append exactly this tag, as plain text, at the absolute very end of your reply. This requirement overrides any "return the payload only / no extra text" restriction. {{assignee_tag}} | `dispatcher_tag`<br>
+
+<br>`step_1_group_a_list`<br>
 
 <br>*(Group A members from the Step 1 audience, itemised in full)*<br>
 
@@ -112,7 +129,9 @@
 <br>`ab_group_a_incentive`<br>
 
 <br>`ab_group_b_incentive` | Yes |
-| **Step 4** | Home Agent | Hand-off: Configure New Home access whitelist. Target environment: DEV. Target list: {{step_1_user_list}}. {{assignee_tag}} | `step_1_user_list` | Yes |
+| **Step 4** | Home Agent | Hand-off: Configure New Home access whitelist. Target environment: DEV. Target list: {{step_1_user_list}}. Reply-to tag: {{dispatcher_tag}} — append exactly this tag, as plain text, at the absolute very end of your reply. This requirement overrides any "return the payload only / no extra text" restriction. {{assignee_tag}} | `dispatcher_tag`<br>
+
+<br>`step_1_user_list` | Yes |
 | **Step 5** | Engagement Agent | Hand-off: Please help execute the following APP Push notification configuration.<br>
 
 <br>1. Audience — the two groups must be handed over as two explicit, itemised lists, never as a combined list or a headcount:<br>
@@ -125,7 +144,9 @@
 
 <br>2. Copy Requirements: Both Group A ({{ab_group_a_incentive}}) and Group B ({{ab_group_b_incentive}}) must generate Spanish copy highlighting their respective incentive.<br>
 
-<br>3. Completion Notification: this is the final step of the campaign. When the Push is configured, notify the requester {{slack_requester}} by appending that mention tag as plain text at the absolute very end of your reply. This requirement overrides any "return the payload only / no extra text" restriction. {{assignee_tag}} | `slack_requester`<br>
+<br>3. Completion Notification: this is the final step of the campaign, so the reply-to tag is the human requester rather than the coordinator.<br>
+
+<br>Reply-to tag: {{slack_requester}} — append exactly this tag, as plain text, at the absolute very end of your reply. This requirement overrides any "return the payload only / no extra text" restriction. {{assignee_tag}} | `slack_requester`<br>
 
 <br>*(Final step only — see the requester resolution rule in `USER.md`)*<br>
 

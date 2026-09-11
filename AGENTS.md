@@ -75,6 +75,11 @@ bare `U...`, which are inert and notify nobody. See "Mention Tag Literal Form" i
 | Home Agent | <@U0C0GNNSLV8> | Product Hub cards, New Home access whitelist |
 | Content Delivery Agent | <@U0C10335RMF> | New Home pop-ups and their copy variants |
 | Engagement Agent | <@U0C01CP09V5> | App Push notifications and their copy variants |
+| Dispatcher (this app) | <@U0C00JCS8NP> | Routing and coordination. Resolves `{{dispatcher_tag}}` — the reply-to tag every mid-flight hand-off asks the assignee to echo back. |
+
+`U0C00JCS8NP` is taken from the `<@ID>` prefixing the `/new` command in the thread root,
+which addresses this application. Confirm it once against the app's real Slack ID before
+relying on it in production.
 
 ## Dispatch State Machine
 
