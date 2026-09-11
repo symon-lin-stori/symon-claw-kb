@@ -54,13 +54,8 @@ sender resolves, stop and ask rather than guessing.
 
 While a campaign is **in flight**, the mention belongs to the agent continuing the work.
 
-- Mid-flight Channel-2 hand-offs carry two tags: `{{dispatcher_tag}}` inside the body,
-  labelled `Reply-to tag:`, and the assignee's routing mention at the absolute end. Never
-  embed a **human** tag mid-flight, and never ask a downstream agent to ping a person.
-- The reply-to tag is what makes the downstream mention skill work at all: that skill
-  extracts a tag from the instruction, so an instruction with no tag produces a reply with
-  no tag. Mid-flight the reply-to tag is the coordinator; in the final step it is the
-  requester.
+- Mid-flight Channel-2 hand-offs carry the assignee's tag and nothing else. Never embed a
+  human tag, and never ask a downstream agent to ping a person on your behalf.
 - Mid-flight Channel-1 dashboards stay mention-free.
 - The requester is notified **once, on completion**, via `{{slack_requester}}` in the
   playbook's final step.

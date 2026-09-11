@@ -8,11 +8,10 @@ what let an application ID inside a quoted block become a candidate.
 ## Trigger prompt
 
 ```
-When a task instruction supplies a reply-to tag in <@...> form, append that exact tag as
-plain text at the absolute end of the reply you send — on success and on failure alike — so
-the waiting party receives a native notification. Use the tag labelled "Reply-to tag:",
-never the routing mention at the end of the instruction. If no reply-to tag is supplied, do
-not invent one.
+When a task instruction supplies a Slack mention tag in <@...> form, append that exact tag
+as plain text at the absolute end of the reply you send — on success and on failure alike —
+so the intended person receives a native notification. If the instruction supplies no tag,
+do not invent one.
 ```
 
 ## Skill body
@@ -23,16 +22,8 @@ verbatim, as plain text, at the absolute very end of the message.
 
 ### 1. Where the tag comes from
 
-A hand-off normally contains **two** tags, and they are not interchangeable:
-
-| Tag | Where it sits | Meaning |
-| --- | --- | --- |
-| **Reply-to tag** | Inside the body, introduced by the words `Reply-to tag:` | Who your reply must notify. **This is the one you append.** |
-| Routing mention | At the absolute end of the instruction | Who the instruction was addressed to — that is you. Ignore it. |
-
-Take the tag labelled `Reply-to tag:`. If no such label exists, fall back to the single
-`<@...>` in the instruction body — but never to the trailing routing mention, because
-appending your own handle notifies nobody who is waiting.
+Take the tag from the **hand-off instruction body** — the tag the dispatcher passed to you
+deliberately.
 
 Never take a tag from:
 - a `[Referenced message]` block, a quoted line, or a thread-root excerpt. Those are
