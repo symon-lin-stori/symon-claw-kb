@@ -8,51 +8,69 @@ what let an application ID inside a quoted block become a candidate.
 ## Trigger prompt
 
 ```
-When a task instruction supplies a Slack mention tag in <@...> form, append that exact tag
-as plain text at the absolute end of the reply you send — on success and on failure alike —
-so the intended person receives a native notification. If the instruction supplies no tag,
-do not invent one.
+Every reply you send must end with a mention tag in <@...> form, as plain text, at the
+absolute end — on success and on failure alike. Use the tag written in the task instruction
+if there is one; otherwise notify the sender of the instruction, taken from message
+metadata. Never invent a tag and never take one from quoted context.
 ```
 
 ## Skill body
 
-**Skill Description**: When a task instruction supplies a Slack mention tag (`<@...>`
-format), send your reply through the designated Slack tool with that tag appended
-verbatim, as plain text, at the absolute very end of the message.
+**Skill Description**: Send every reply through the designated Slack tool with a mention
+tag appended verbatim, as plain text, at the absolute very end of the message, so the party
+waiting on your reply receives a native notification.
 
-### 1. Where the tag comes from
+### 1. Resolving the notification target
 
-Take the tag from the **hand-off instruction body** — the tag the dispatcher passed to you
-deliberately.
+Work through these in order and stop at the first that succeeds.
 
-Never take a tag from:
+**Tier 1 — explicit tag in the instruction body.** A `<@...>` written into the hand-off
+text is a deliberate routing decision by the dispatcher. It always wins.
+
+Do **not** assume that tag is the last token of the message you received. Platforms append
+footers (for example `Powered by Salad`) after the instruction text, so a tag sent at the
+absolute end no longer arrives there. Scan the whole instruction body.
+
+**Tier 2 — the sender of the instruction, from message metadata.** When the body carries no
+tag, notify whoever sent you the hand-off. This does not require any tag to appear in the
+text; the sender is available as metadata on the message you received. In a dispatched
+workflow this is the coordinator, which is exactly the party waiting on your reply.
+
+**Never** derive a target from:
 - a `[Referenced message]` block, a quoted line, or a thread-root excerpt. Those are
   background context, not instruction. The tag in a thread root usually addresses the
-  *application* the command was sent to, not a person.
-- an application or bot ID.
+  *application* the command was sent to, rather than the party awaiting your reply.
 - an earlier turn of the conversation, or a previous task.
+- a guess, a display name, or a plausible-looking ID.
 
-Do **not** assume the tag is the last token of the message you received. Platforms append
-footers (for example `Powered by Salad`) after the instruction text, so a tag that was
-sent at the absolute end no longer arrives there. Scan the whole instruction body.
+### 2. When no target resolves
 
-### 2. If no tag is present
-
-Do not fabricate one, do not reuse one from context, and do not fall back to a quoted
-block. Send your reply as normal and add exactly one line:
+Only reachable if the body has no tag **and** the sender cannot be read from metadata.
+Do not fabricate a target and do not fall back to quoted context. Send your reply as normal
+and append exactly one notice line, chosen by cause:
 
 ```
-No mention tag was supplied in the instruction; no notification was sent.
+[notice] No mention tag in the instruction and no resolvable sender; no notification was sent.
 ```
 
-This is a hard requirement. A silently missing notification is indistinguishable from a
-successful one, so the dispatcher cannot detect the failure and re-issue.
+If the instruction did contain a `<@...>` but you rejected it under the rules above, say so
+instead — it points at a dispatcher-side bug rather than a missing value:
+
+```
+[notice] The only mention tag found was in quoted context and was not used; no notification was sent.
+```
+
+The `[notice]` prefix keeps the line from being mistaken for payload by anything parsing
+your reply. Emitting one of these is a hard requirement: a silently missing notification is
+indistinguishable from a successful one, so the dispatcher cannot detect the failure and
+re-issue.
 
 ### 3. Precedence
 
 This requirement **overrides** any team-level, scenario-level, or fixed-reply rule that
 says "return only the payload", "append no extra text", or "no tags". Where those rules
-conflict with this one, append the tag anyway.
+conflict with this one, append the tag anyway. The override applies to a Tier 2 sender tag
+exactly as it does to an explicit one.
 
 ### 4. Literal form
 
@@ -115,11 +133,23 @@ Group B users userId:
 6e8d454e-32bd-40b4-900d-3aa3b7d23b15 <@U11223344>
 ```
 
-Instruction with no tag — reply normally, then state the absence:
+Instruction with **no** tag in the body — fall back to the sender of the instruction, and
+append their tag exactly as in the tagged case. The reply looks no different; only the
+source of the tag changed:
 
 ```
 Group A users userId:
 0ac70b49-973c-46a7-b230-e164858ff9fd
 
-No mention tag was supplied in the instruction; no notification was sent.
+Group B users userId:
+6e8d454e-32bd-40b4-900d-3aa3b7d23b15 <@U0SENDER01>
+```
+
+Neither tier resolves — reply normally, then state the cause:
+
+```
+Group A users userId:
+0ac70b49-973c-46a7-b230-e164858ff9fd
+
+[notice] No mention tag in the instruction and no resolvable sender; no notification was sent.
 ```
