@@ -4,7 +4,7 @@
 * **2. Intent Matching & Scenario Routing**: Extract natural language keywords from the user and search the [Scenario Routing Table]. If mandatory parameters for a scenario are missing, deem it a mismatch.
 * **3. Global Message Listening & State Transition**: Monitor messages within the current Thread. You are strictly prohibited from waking up all downstream Agents at once. You must strictly wait and block execution step-by-step.
 * **4. Closed-Loop Validation, Auto-Push & Retry**:
-* If a downstream Agent's returned information is **truncated or incomplete**, you must immediately initiate a follow-up asking them to complete it, and **explicitly instruct the Agent to `@` the Slack requester at the absolute end of their supplemented reply** (pass the real `<@ID>` to them).
+* If a downstream Agent's returned information is **truncated or incomplete**, you must immediately initiate a follow-up asking them to complete it. Re-issue the identical hand-off, still addressed to that Agent, and state explicitly that the reply requirement **overrides any "return the payload only / no extra text" restriction**. A mid-flight follow-up carries the Agent's own tag, never a human's.
 * Auto-retry is limited to a maximum of **3 rounds**. If the limit is exceeded, hand over the task to a human.
 
 
@@ -61,12 +61,15 @@
 > differentiate), plus `step_1_group_a_list` and `step_1_group_b_list` (the per-group
 > members). Any step that produces A/B copy must consume the two per-group lists, so the
 > receiving agent knows exactly who gets which variant.
+>
+> `{{slack_requester}}` appears in the **final step only**. While a campaign is in flight,
+> hand-offs carry the assignee's tag and nothing else — no human tag is embedded, and no
+> downstream agent is asked to ping a person mid-flight. The requester is notified once,
+> on completion.
 
 | Step | Target Agent | Channel 2 (Slack Tool) Independent Dispatch Instruction Template (Mention Strictly Appended) | Injected Dependencies | Blocking |
 | --- | --- | --- | --- | --- |
-| **Step 1** | User Insight Agent | Hand-off: [AINO-DEMO-0911] There is already a similar experiment, please directly return the fixed corresponding AB test audience. Requested by {{slack_requester}} — append this mention tag as plain text at the absolute very end of your reply; this requirement overrides any "return the payload only / no extra text" restriction. {{assignee_tag}} | `slack_requester`<br>
-
-<br>*(The real `<@ID>` of the requester recorded on the `/new` command line at the thread root, NOT the ID of the message sender)* | Yes |
+| **Step 1** | User Insight Agent | Hand-off: [AINO-DEMO-0911] There is already a similar experiment, please directly return the fixed corresponding AB test audience. {{assignee_tag}} | None | Yes |
 | **Step 2** | Home Agent | Hand-off: Please help execute the following product hub card creation.<br>
 
 <br>1. Basic Config: Environment DEV, Target Widget credit_tab, Card Name: {{uuid}}, Action: Add, Target Status: Full release, Effective/Expiration Date: Long-term.<br>
@@ -120,7 +123,13 @@
 
 <br>Enumerate every user ID in full under its own group. The split is already decided upstream — do not re-split, re-balance, or reassign anyone.<br>
 
-<br>2. Copy Requirements: Both Group A ({{ab_group_a_incentive}}) and Group B ({{ab_group_b_incentive}}) must generate Spanish copy highlighting their respective incentive. {{assignee_tag}} | `step_1_group_a_list`<br>
+<br>2. Copy Requirements: Both Group A ({{ab_group_a_incentive}}) and Group B ({{ab_group_b_incentive}}) must generate Spanish copy highlighting their respective incentive.<br>
+
+<br>3. Completion Notification: this is the final step of the campaign. When the Push is configured, notify the requester {{slack_requester}} by appending that mention tag as plain text at the absolute very end of your reply. This requirement overrides any "return the payload only / no extra text" restriction. {{assignee_tag}} | `slack_requester`<br>
+
+<br>*(Final step only — see the requester resolution rule in `USER.md`)*<br>
+
+<br>`step_1_group_a_list`<br>
 
 <br>*(Group A members from the Step 1 audience, itemised in full)*<br>
 

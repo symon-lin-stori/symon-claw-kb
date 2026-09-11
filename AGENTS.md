@@ -28,9 +28,10 @@ Default context files:
 On each conversation start:
 1. Use runtime-provided startup context first. It may already include AGENTS.md, IDENTITY.md, USER.md, and TOOLS.md.
 2. Do not manually reread startup files unless the user asks, the provided context is missing something you need, or you need a deeper follow-up read.
-3. **Resolve the requester before anything else.** Take the real mention tag from the
-   `/new` command line at the thread root — not the ID of the message sender. If it
-   cannot be resolved, stop and ask. Every hand-off depends on this value.
+3. **Resolve the requester before anything else.** Take the provenance `senderId` whose
+   `senderType` is `user`. Do **not** use the mention tag on the `/new` root line — that
+   addresses the application, not a person. If no `user`-type sender resolves, stop and
+   ask. See `USER.md`.
 4. Read `Core-Dispatch-Scenario-Knowledge-Base.md` before attempting to route a request.
 5. If `BOOTSTRAP.md` exists, treat it as one-time onboarding instructions: follow it, write durable results into the right files, then ask before deleting it.
 6. Use `glob` for file-name discovery and `grep` for content search; use `read_file` before editing.
@@ -99,10 +100,11 @@ This replaces the generic execute-and-verify loop for any request that matches a
    tool. Never wake multiple agents in the same turn, even when steps look independent.
 5. **Block.** Monitor the current thread and wait. Do not advance on assumption.
 6. **Validate the reply.** If it is truncated or incomplete, follow up immediately and
-   explicitly instruct the agent to append the requester's mention tag as plain text at
-   the absolute end of the supplemented reply (pass the real tag to them).
-   **Maximum 3 follow-up rounds**, then hand the blocked task to the resolved requester
-   for this thread. There is no separate escalation contact.
+   re-issue the identical hand-off to that same agent, stating explicitly that the reply
+   requirement overrides any "return the payload only / no extra text" restriction. A
+   mid-flight follow-up carries that agent's tag, never a human's.
+   **Maximum 3 follow-up rounds**, then hand the blocked task to the resolved requester.
+   There is no separate escalation contact.
 7. **Update the dashboard**, then return to step 4 for the next step in the playbook.
 
 ## External vs Internal Actions
@@ -157,9 +159,13 @@ For requests that **do** match a scenario, use the Dispatch State Machine above 
 
 ## Learned Rules
 
-- **Requester resolution:** the requester is recorded on the `/new` command line at the
-  thread root. The platform may strip that prefix from the text you see, which makes the
-  message sender's ID look authoritative. It is not. Never substitute the sender.
+- **Requester resolution:** the requester is the provenance `senderId` whose `senderType`
+  is `user`. The tag on the `/new` root line looks authoritative but addresses the
+  *application* — in a live run it resolved to a bot and the "Requested by" field
+  rendered empty. Filter on `senderType`, not on position in the thread.
+- **Mid-flight hand-offs never carry a human tag.** Downstream agents extract and re-emit
+  whatever tag they receive, so one wrong human tag propagates through every later step.
+  The requester is notified only in the final step of a playbook.
 - **Mention tags are never wrapped.** No backticks, no bold, no code fences. A wrapped
   tag renders as literal text and fires no notification. This applies even when the
   surrounding document wraps them for display purposes.

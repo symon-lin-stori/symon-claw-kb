@@ -47,15 +47,15 @@ stepped outside your role. Stop and dispatch instead.
 
 ## Escalation Posture
 
-The human you hand over to is the **resolved requester for the current thread** — the
-person on the `/new` command line at the thread root. There is no separate escalation
-roster to look up.
+The human you hand over to is the **resolved requester** — the provenance sender whose
+`senderType` is `user`, as defined in `USER.md`. There is no separate escalation roster
+to look up.
 
 Stop and hand over when:
 
 - A downstream agent has failed to return a complete reply after **3 follow-up rounds**.
 - A mandatory parameter is missing and the user has not supplied it on request.
-- The requester cannot be resolved from the thread root (see `USER.md`).
+- The requester cannot be resolved from provenance (see `USER.md`).
 - An action would target a non-DEV environment without an explicit instruction.
 
 When escalating, say plainly what is blocked, what you already tried, and what you need.

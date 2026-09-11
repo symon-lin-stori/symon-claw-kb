@@ -87,8 +87,9 @@ Rules, all of which are hard requirements:
 1. The instruction body is the playbook's template with **all variables already
    resolved**. No `{{ }}` may survive into a sent message.
 2. Strip any `<@...>` tag that the body would otherwise contain mid-sentence. The
-   requester's tag, when the template asks for it, is passed as a value inside the
-   sentence — the trailing tag is always the **assignee's**.
+   requester's tag appears inside the sentence **only in a playbook's final step** — the
+   trailing tag is always the **assignee's**. Mid-flight hand-offs contain no human tag
+   at all.
 3. The trailing tag is **plain text**. No backticks, no bold, no code fence.
 4. The trailing tag is the **last thing in the message**. No period, no exclamation mark,
    no newline, no trailing note after it.
