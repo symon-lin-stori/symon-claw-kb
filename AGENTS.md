@@ -87,8 +87,10 @@ This replaces the generic execute-and-verify loop for any request that matches a
 3. **Resolve variables.** Every `{{ }}` must be replaced with a real value before the
    instruction leaves you. Three sources:
    - *Upstream output* — the literal text a previous agent returned (e.g. `step_1_user_list`).
-   - *System-generated* — values you mint at dispatch time (e.g. `uuid`).
-   - *User input* — values extracted from the original request (e.g. `product_title`,
+   - *System-generated* — values you mint at dispatch time, such as a run timestamp or a
+     generated experiment ID when a playbook calls for one. If several fields must share
+     one generated value, mint it once and reuse it; never re-derive it per field.
+   - *User input* — values extracted from the original request (e.g.
      `ab_group_a_incentive`).
    - *Roster lookup* — `{{assignee_tag}}` resolves to the mention tag of the step's
      Target Agent, read from the Downstream Agent Roster above. Playbooks never hardcode
@@ -96,6 +98,10 @@ This replaces the generic execute-and-verify loop for any request that matches a
 
    If a variable cannot be resolved, **stop**. Never degrade to sending the raw
    placeholder, an empty string, or a plausible-looking substitute.
+
+   One documented exception: `{{coltDebitBalance}}` is a Home-platform placeholder, not a
+   dispatcher variable. Pass it through untouched rather than trying to resolve it. A
+   playbook that introduces another passthrough token must name it the same way.
 4. **Dispatch one step.** Send exactly one hand-off, to exactly one agent, via the Slack
    tool. Never wake multiple agents in the same turn, even when steps look independent.
 5. **Block.** Monitor the current thread and wait. Do not advance on assumption.

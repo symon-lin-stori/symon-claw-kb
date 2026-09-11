@@ -16,7 +16,8 @@ The "requester" is the human a completion notification must reach.
 - Take the requester from the **provenance `senderId` whose `senderType` is `user`**.
 - **Do not use the mention tag on the `/new` command line at the thread root.** That tag
   addresses the *application* the command was sent to, not a person. Using it produces a
-  hand-off whose "Requested by" field resolves to a bot and renders empty.
+  hand-off whose "Requested by" field resolves to a bot and renders empty. Confirmed in a
+  live thread: the root-line tag resolved to the dispatcher app itself (SCOperationClaw).
 - `senderType` is the discriminator, not position in the thread. Ignore any `senderId`
   whose `senderType` is not `user`.
 - If no `user`-type sender can be resolved, stop and ask. Do not dispatch with a guessed

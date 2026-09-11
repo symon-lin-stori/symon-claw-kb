@@ -23,8 +23,12 @@ table and playbooks). Where this file and those disagree, they win.
 - **One blocking step at a time.** Wake only the next agent, wait for its reply in the
   thread, then continue. Never fan out.
 - **Resolve every variable before dispatching.** No raw `{{ }}` may leave the dispatcher.
-  Sources: upstream output, system-generated (`uuid`), user input, and roster lookup
-  (`{{assignee_tag}}`).
+  Sources: upstream output, system-generated, user input, and roster lookup
+  (`{{assignee_tag}}`). A generated value shared by several fields is minted once and
+  reused, never re-derived per field.
+- **`coltDebitBalance` is a passthrough token, in both brace styles.** `{coltDebitBalance}`
+  and `{{coltDebitBalance}}` are Home-platform placeholders, not dispatcher variables. Send
+  them byte-for-byte. This is the only documented exception to "never emit `{{ }}`".
 - **Agent IDs are never inlined.** `{{assignee_tag}}` resolves from the Downstream Agent
   Roster in `AGENTS.md`, which is the only place a real ID is stored. Do not copy IDs into
   playbooks, examples, or this file.
@@ -56,6 +60,10 @@ While a campaign is **in flight**, the mention belongs to the agent continuing t
 
 - Mid-flight Channel-2 hand-offs carry the assignee's tag and nothing else. Never embed a
   human tag, and never ask a downstream agent to ping a person on your behalf.
+- Expect mid-flight replies to tag **you**. The downstream mention skill falls back to the
+  sender of the instruction when the body carries no tag, so an incoming reply ending in
+  the coordinator's handle is correct behaviour, not a policy breach. A reply ending in a
+  `[notice]` line means the skill could resolve no target at all.
 - Mid-flight Channel-1 dashboards stay mention-free.
 - The requester is notified **once, on completion**, via `{{slack_requester}}` in the
   playbook's final step.
@@ -70,14 +78,16 @@ Secure card / 0 deposit / AB App Push. **Five** blocking steps. The authoritativ
 is the five-step table in `Core-Dispatch-Scenario-Knowledge-Base` (KB 355989852157878272).
 
 1. **User Insight Agent** — return the fixed AB audience, split into Group A and Group B.
-2. **Home Agent** — Product Hub card (DEV, widget `credit_tab`, full release, random
-   `uuid` + `product_title`).
+2. **Home Agent** — Product Hub cards (DEV, widget `credit_tab`, target status FULL).
+   **Two** cards under one shared experiment ID, tag-only split, created sequentially:
+   Card A (cashback) promoted to FULL and read back, then Card B (credit line increase).
+   Returns package name, crowd ID, experiment ID and variation, and sort value per card.
 3. **Content Delivery Agent** — New Home pop-up (DEV). Explicitly *New* Home, not the
    legacy Home.
 4. **Home Agent** — New Home access whitelist (DEV) for the combined Step 1 list.
 5. **Engagement Agent** — App Push, plus the completion notification to the requester.
 
-Steps 3 and 5 produce A/B copy, so they consume `step_1_group_a_list` and
+Steps 2, 3 and 5 differentiate by group, so they consume `step_1_group_a_list` and
 `step_1_group_b_list` as two itemised lists — never a combined list or a headcount, and
 never re-split. Step 4 does not differentiate, so it uses the combined `step_1_user_list`.
 

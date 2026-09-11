@@ -59,8 +59,17 @@
 > Step 1 returns one audience already split into two groups. It is exposed downstream as
 > three variables: `step_1_user_list` (the combined audience, for steps that do not
 > differentiate), plus `step_1_group_a_list` and `step_1_group_b_list` (the per-group
-> members). Any step that produces A/B copy must consume the two per-group lists, so the
-> receiving agent knows exactly who gets which variant.
+> members). Any step that differentiates by group — whether by copy or by a separate
+> configuration object — must consume the two per-group lists, so the receiving agent knows
+> exactly who gets which variant.
+>
+> **Literal passthrough tokens.** `coltDebitBalance` is a Home-platform dynamic-field
+> placeholder, not a dispatcher variable. It appears in two brace styles because the Home
+> configuration uses both: `{coltDebitBalance}` marks the insertion position, and
+> `{{coltDebitBalance}}` sits inside the `productDescription` string. **Send both forms
+> through byte-for-byte.** This is the one documented exception to the rule that no `{{ }}`
+> may leave the dispatcher — do not resolve it, do not blank it, and do not stall on it.
+> Every *other* `{{ }}` token must still be resolved before dispatch.
 >
 > `{{slack_requester}}` appears in the **final step only**. While a campaign is in flight,
 > hand-offs carry the assignee's tag and nothing else — no human tag is embedded, and no
@@ -70,23 +79,25 @@
 | Step | Target Agent | Channel 2 (Slack Tool) Independent Dispatch Instruction Template (Mention Strictly Appended) | Injected Dependencies | Blocking |
 | --- | --- | --- | --- | --- |
 | **Step 1** | User Insight Agent | Hand-off: [AINO-DEMO-0911] There is already a similar experiment, please directly return the fixed corresponding AB test audience. {{assignee_tag}} | None | Yes |
-| **Step 2** | Home Agent | Hand-off: Please help execute the following product hub card creation.<br>
+| **Step 2** | Home Agent | Hand-off: Please create the following Product Hub cards (A/B experiment, two cards; run A first, then B after A completes).<br>
 
-<br>1. Basic Config: Environment DEV, Target Widget credit_tab, Card Name: {{uuid}}, Action: Add, Target Status: Full release, Effective/Expiration Date: Long-term.<br>
+<br>1. Common settings (same for both cards): Environment: DEV. Target widget: credit_tab. Operation: create. Target status: FULL. Effective time: immediately, no end. Expiry time: 2026-09-30T23:59:59, timezone America/Mexico_City (adjust to the campaign end date).<br>
 
-<br>2. Display Conditions: Meet all, has_active_credit_contract equals false, Display Order: Last, No package-level limits.<br>
+<br>2. Display conditions (same for both cards): Relation: ALL must match. Conditions: has_active_credit_contract equals true. Display order: first. Frequency: no package-level limit.<br>
 
-<br>3. Card Content: productImage=[https://ms-finans-cdn.storicarddev.com/new-plh/credit_product.png](https://ms-finans-cdn.storicarddev.com/new-plh/credit_product.png), productTitle={{product_title}}, productDescription="Your current debit balance check: {coltDebitBalance}. Activate your Stori credit card and start using your line today.", intent=X_SELL, navigationCaret(type=deeplink, target=stori://home?menu=storicard), tooltipButton none, helperText="No annual fee", linkButton(text="Apply now", action=NAVIGATE, value="stori://home?menu=storicard").<br>
+<br>3. Dynamic field (same for both cards): Position: {coltDebitBalance} inside productDescription. Data field: colt_debit_balance. Format: raw field value. When missing: hide.<br>
 
-<br>4. Dynamic Fields: Display position in productDescription at {coltDebitBalance}, Use field: colt_debit_balance, Display format: Original field format, Hide when no data.<br>
+<br>4. Gray rollout (same for both cards): not needed (target status is FULL).<br>
 
-<br>5. Rollout Scope: None. {{assignee_tag}} | `uuid`<br>
+<br>5. A/B experiment (shared by both cards): Participate: yes. Split mode: tag only (no bucketing; the experiment ID and variation are written on the package for tracking only). Experiment ID: EX_credit_tab_secured_zero_deposit_incentive_1515. Description: Secured Card zero deposit incentive, cashback vs clip.<br>
 
-<br>*(Generate random unique ID)*<br>
+<br>6. Card A (cashback): Card name: Secured card deposit cashback A-1515. Variation: A. Traffic range: not needed (tag only). Audience: specific user list. User list (unique_user_id, one per line): {{step_1_group_a_list}}. Card content (PRODUCT_CARD): productImage: https://ms-finans-cdn.storicarddev.com/new-plh/credit_product.png, productTitle: Gana cashback con tu Secured Card, productDescription: Deposita {{coltDebitBalance}} y gana 5% cashback., intent: X_SELL, navigationCaret: type = deeplink, target = stori://home?menu=securedcard-deposit, tooltipButton: none, helperText: Sin anualidad, linkButton: text = Depositar ahora, action = NAVIGATE, navigation = {type: deeplink, target: stori://home?menu=securedcard-deposit}.<br>
 
-<br>`product_title`<br>
+<br>7. Card B (credit line increase): Card name: Secured card deposit clip B-1515. Variation: B. Traffic range: not needed (tag only). Audience: specific user list. User list (unique_user_id, one per line): {{step_1_group_b_list}}. Card content (PRODUCT_CARD): productImage: https://ms-finans-cdn.storicarddev.com/new-plh/credit_product.png, productTitle: Sube tu línea con tu Secured Card, productDescription: Deposita {{coltDebitBalance}} y sube tu línea., intent: X_SELL, navigationCaret: type = deeplink, target = stori://home?menu=securedcard-deposit, tooltipButton: none, helperText: Sin anualidad, linkButton: text = Depositar ahora, action = NAVIGATE, navigation = {type: deeplink, target: stori://home?menu=securedcard-deposit}.<br>
 
-<br>*(Extracted from user input)* | Yes |
+<br>8. Execution: Mode: execute (not preview). Order: create card A and promote it to FULL; after its read-back completes, create card B. When done, return for each card: package name, crowd ID (feature flag key), experiment ID and variation, sort value. {{assignee_tag}} | `step_1_group_a_list`<br>
+
+<br>`step_1_group_b_list` | Yes |
 | **Step 3** | Content Delivery Agent | Hand-off: Please help execute the following New Home pop-up configuration. The target surface is the pop-up on the New Home page (not the legacy Home).<br>
 
 <br>1. Basic Config: Environment DEV, Action: Add, Target Status: Full release, Effective/Expiration Date: Long-term.<br>
