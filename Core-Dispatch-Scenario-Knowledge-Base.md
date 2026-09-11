@@ -123,7 +123,7 @@ Progress: `██░░░░░░░░` 1/5 · Step 2
 | **Step 1** | User Insight Agent | Hand-off: [AINO-DEMO-0911] There is already a similar experiment, please directly return the fixed corresponding AB test audience. {{assignee_tag}} | None | Yes |
 | **Step 2** | Home Agent | Hand-off: Please create the following Product Hub cards (two cards; run A first, then B after A completes).<br>
 
-<br>1. Common settings (same for both cards): Environment: DEV. Target widget: credit_tab. Operation: create. Target status: FULL. Effective time: immediately, no end. Expiry time: 2026-09-30T23:59:59, timezone America/Mexico_City (adjust to the campaign end date).<br>
+<br>1. Common settings (same for both cards): Environment: DEV. Target widget: credit_tab. Operation: create. Re-run: auto-suffix the card name on every run (the script appends a run timestamp). Target status: FULL. Effective time: immediately, no end. Expiry time: 30 days from now.<br>
 
 <br>2. Display conditions (same for both cards): Relation: ALL must match. Conditions: has_active_credit_contract equals true. Display order: first. Frequency: no package-level limit.<br>
 
@@ -133,11 +133,11 @@ Progress: `██░░░░░░░░` 1/5 · Step 2
 
 <br>5. A/B experiment: Participate: no.<br>
 
-<br>6. Card A (cashback): Card name: Secured card deposit cashback A-1515. Audience: specific user list. User list (unique_user_id, one per line): {{step_1_group_a_list}}. Card content (PRODUCT_CARD): productImage: https://ms-finans-cdn.storicarddev.com/new-plh/credit_product.png, productTitle: Gana cashback con tu Secured Card, productDescription: Deposita {{coltDebitBalance}} y gana 5%, intent: X_SELL, navigationCaret: type = deeplink, target = stori://home?menu=storicard, tooltipButton: none, helperText: Sin anualidad, linkButton: text = Depositar ahora, action = NAVIGATE, navigation = {type: deeplink, target: stori://home?menu=storicard}.<br>
+<br>6. Card A (cashback): Card name: Secured card deposit cashback A. Audience: specific user list. User list (unique_user_id, one per line): {{step_1_group_a_list}}. Card content (PRODUCT_CARD): productImage: https://ms-finans-cdn.storicarddev.com/new-plh/credit_product.png, productTitle: Gana cashback con tu Secured Card, productDescription: Deposita {{coltDebitBalance}} y gana 5%, intent: X_SELL, navigationCaret: type = deeplink, target = stori://home?menu=storicard, tooltipButton: none, helperText: Sin anualidad, linkButton: text = Depositar ahora, action = NAVIGATE, navigation = {type: deeplink, target: stori://home?menu=storicard}.<br>
 
-<br>7. Card B (credit line increase): Card name: Secured card deposit clip B-1515. Audience: specific user list. User list (unique_user_id, one per line): {{step_1_group_b_list}}. Card content (PRODUCT_CARD): productImage: https://ms-finans-cdn.storicarddev.com/new-plh/credit_product.png, productTitle: Sube tu línea con tu Secured Card, productDescription: Deposita {{coltDebitBalance}} y sube tu línea, intent: X_SELL, navigationCaret: type = deeplink, target = stori://home?menu=storicard, tooltipButton: none, helperText: Sin anualidad, linkButton: text = Depositar ahora, action = NAVIGATE, navigation = {type: deeplink, target: stori://home?menu=storicard}.<br>
+<br>7. Card B (credit line increase): Card name: Secured card deposit clip B. Audience: specific user list. User list (unique_user_id, one per line): {{step_1_group_b_list}}. Card content (PRODUCT_CARD): productImage: https://ms-finans-cdn.storicarddev.com/new-plh/credit_product.png, productTitle: Sube tu línea con tu Secured Card, productDescription: Deposita {{coltDebitBalance}} y sube tu línea, intent: X_SELL, navigationCaret: type = deeplink, target = stori://home?menu=storicard, tooltipButton: none, helperText: Sin anualidad, linkButton: text = Depositar ahora, action = NAVIGATE, navigation = {type: deeplink, target: stori://home?menu=storicard}.<br>
 
-<br>8. Execution: Mode: execute (not preview). Order: create card A and promote it to FULL; after its read-back completes, create card B. When done, return for each card: package name, crowd ID (feature flag key), sort value. {{assignee_tag}} | `step_1_group_a_list`<br>
+<br>8. Execution: Mode: execute (not preview). Order: create card A and promote it to FULL; after its read-back completes, create card B. When done, return for each card: the card name actually used, package name, crowd ID (feature flag key), sort value. {{assignee_tag}} | `step_1_group_a_list`<br>
 
 <br>`step_1_group_b_list` | Yes |
 | **Step 3** | Content Delivery Agent | Hand-off: Please help execute the following New Home pop-up configuration. The target surface is the pop-up on the New Home page (not the legacy Home).<br>

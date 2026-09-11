@@ -104,8 +104,11 @@ is the five-step table in `Core-Dispatch-Scenario-Knowledge-Base` (KB 3559898521
 1. **User Insight Agent** — return the fixed AB audience, split into Group A and Group B.
 2. **Home Agent** — Product Hub cards (DEV, widget `credit_tab`, target status FULL).
    **Two** cards, no A/B experiment attached, created sequentially: Card A (cashback)
-   promoted to FULL and read back, then Card B (credit line increase). Returns package
-   name, crowd ID, and sort value per card.
+   promoted to FULL and read back, then Card B (credit line increase). The script
+   auto-suffixes a run timestamp onto each card name, so the base names in the playbook are
+   never the names that end up live — always take the actual name from the reply, and never
+   assume it matches what was sent. Returns the card name actually used, package name,
+   crowd ID, and sort value per card.
 3. **Content Delivery Agent** — New Home pop-up (DEV). Explicitly *New* Home, not the
    legacy Home.
 4. **Home Agent** — New Home access whitelist (DEV) for the combined Step 1 list.
