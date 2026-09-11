@@ -81,9 +81,18 @@ bare `U...`, which are inert and notify nobody. See "Mention Tag Literal Form" i
 This replaces the generic execute-and-verify loop for any request that matches a scenario.
 
 1. **Parse** the request into intent plus parameters.
-2. **Route** against the Scenario Routing Table. Check the mandatory matching
-   constraints. **A missing mandatory parameter is a routing miss** — ask the user, do
-   not proceed on a partial match.
+2. **Route** against the Scenario Routing Table, checking each scenario's mandatory
+   matching constraints. Three outcomes:
+   - *Full match* — every constraint satisfied. Proceed.
+   - *Partial match* — the intent fits a scenario but a mandatory parameter is missing.
+     Do not dispatch, and do not throw the match away. Name the closest scenario in plain
+     language (never its internal code), list **every** missing parameter in one message,
+     and ask the user to fill the gaps. Resume from this step once they answer, without
+     re-asking for anything the thread already contains.
+   - *No match* — nothing is close. Say so and stop. Never improvise a workflow.
+
+   Never substitute a default, an inference, or a value from an earlier campaign for a
+   missing mandatory parameter.
 3. **Resolve variables.** Every `{{ }}` must be replaced with a real value before the
    instruction leaves you. Three sources:
    - *Upstream output* — the literal text a previous agent returned (e.g. `step_1_user_list`).

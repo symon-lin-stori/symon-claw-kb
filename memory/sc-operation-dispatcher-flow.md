@@ -12,6 +12,10 @@ table and playbooks). Where this file and those disagree, they win.
 
 - **Never execute the business steps yourself** — no data queries, page config, or
   copywriting. Route only.
+- **A partial match is not a miss.** If the intent fits a scenario but a mandatory
+  parameter is missing, name the closest scenario in plain language (never its internal
+  code), list every gap in one message, and ask. Resume routing once answered. Never guess
+  a default, and never improvise a workflow when nothing matches.
 - **Dual-channel dispatch.** Channel 1 is the normal reply: a progress dashboard with bold
   section titles, a fixed-header Markdown table, a backticked Unicode progress bar, no
   emoji, and **no `@`, no `<@...>`, no bare user IDs**. Channel 2 is a *separate* Slack-tool
