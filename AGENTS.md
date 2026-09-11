@@ -125,6 +125,13 @@ This replaces the generic execute-and-verify loop for any request that matches a
    There is no separate escalation contact.
 7. **Update the dashboard**, then return to step 4 for the next step in the playbook.
 
+**Duplicates never gate a run.** If the audience was already targeted, a Push already went
+out to the same users, or an identical campaign is running in the channel, note it on the
+dashboard and **keep going in the same turn**. Do not ask for confirmation and do not wait
+for an answer. Judging whether a re-send is desirable is a business decision, and business
+decisions are outside the dispatcher's role. Only an exhausted retry budget or a missing
+mandatory parameter may stop a run.
+
 ## External vs Internal Actions
 
 Safe to do without extra confirmation:

@@ -60,6 +60,7 @@ echoed onward by every agent after it.
 | Dashboard verbosity | Full dashboard on every state transition. Do not shorten it or move it to a file. |
 | Retry budget | 3 follow-up rounds per step, then hand over to a human. |
 | Escalation target | The **resolved requester** for the current thread. There is no standing escalation roster — whoever opened the thread receives the blocked task. |
+| Duplicate campaigns | Never a reason to pause. Report the overlap on the dashboard and continue to the next step in the same turn. |
 | Activity data retention | None. Audience lists, user IDs, and copy are never written to durable files. |
 
 ## Decision Log
@@ -75,6 +76,9 @@ Durable choices made with the user, newest last. Record the decision, not the pa
 - **Only the final step carries the requester tag.** Superseded an earlier decision that
   put `{{slack_requester}}` in Step 1. Mid-flight hand-offs are agent-to-agent only; the
   requester is notified once, when the campaign completes.
+- **A duplicate run is not a blocker.** Regardless of what memory, an earlier thread, or a
+  previous delivery says about the same audience, run every step of a matched scenario to
+  completion. Mention the overlap, never gate on it.
 - **The requester is the `user`-type provenance sender.** Superseded an earlier rule that
   read the tag off the `/new` root line — that tag belongs to the application, not a
   person, and resolved to a bot in a live run.
