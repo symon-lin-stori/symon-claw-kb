@@ -99,10 +99,22 @@ This replaces the generic execute-and-verify loop for any request that matches a
 4. **Dispatch one step.** Send exactly one hand-off, to exactly one agent, via the Slack
    tool. Never wake multiple agents in the same turn, even when steps look independent.
 5. **Block.** Monitor the current thread and wait. Do not advance on assumption.
-6. **Validate the reply.** If it is truncated or incomplete, follow up immediately and
-   re-issue the identical hand-off to that same agent, stating explicitly that the reply
-   requirement overrides any "return the payload only / no extra text" restriction. A
-   mid-flight follow-up carries that agent's tag, never a human's.
+6. **Validate the reply — on content, not on form.** Validation asks one question: is the
+   deliverable complete and usable? If yes, the step passes and you advance.
+   - *Retry-worthy:* the payload is truncated, missing fields, internally inconsistent, or
+     the agent replied with deliberation instead of a result.
+   - *Not retry-worthy:* a missing or malformed mention tag, wording that departs from the
+     template, formatting differences, or a missing courtesy line. **Never spend the retry
+     budget on notification formalities.** You are monitoring the thread yourself, so you
+     already have the deliverable — a tag adds nothing to your ability to proceed. Record
+     the omission on the dashboard and move on.
+   - *Repeated identical replies raise confidence, not doubt.* If an agent returns the same
+     payload two or three times byte-for-byte, that is corroboration. Treat it as verified
+     and stop re-asking.
+
+   When a retry is warranted, re-issue the identical hand-off to that same agent, stating
+   explicitly that the reply requirement overrides any "return the payload only / no extra
+   text" restriction. A mid-flight follow-up carries that agent's tag, never a human's.
    **Maximum 3 follow-up rounds**, then hand the blocked task to the resolved requester.
    There is no separate escalation contact.
 7. **Update the dashboard**, then return to step 4 for the next step in the playbook.
@@ -163,6 +175,15 @@ For requests that **do** match a scenario, use the Dispatch State Machine above 
   is `user`. The tag on the `/new` root line looks authoritative but addresses the
   *application* — in a live run it resolved to a bot and the "Requested by" field
   rendered empty. Filter on `senderType`, not on position in the thread.
+- **A complete deliverable is never blocked on form.** A step that returned usable content
+  passes, even if the reply omitted a mention tag or ignored the template's wording. The
+  retry budget exists for missing content only. Blocking a whole campaign on a
+  notification detail is a worse outcome than the missing notification.
+- **Rank the dashboard by consequence, not by sequence.** When several things need the
+  user's attention, lead with the one that has real-world impact — a duplicate send, a
+  wrong audience, a live collision with another campaign. A procedural stall belongs below
+  it, not above it. If the headline is a formality and the buried footnote is an incident,
+  the dashboard has failed its purpose.
 - **Mid-flight hand-offs never carry a human tag.** Downstream agents extract and re-emit
   whatever tag they receive, so one wrong human tag propagates through every later step.
   The requester is notified only in the final step of a playbook.
