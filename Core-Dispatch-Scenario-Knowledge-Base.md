@@ -52,12 +52,16 @@ Here is the fully translated English version of the knowledge base for your depl
 
 * **Scenario Description:** Conduct a customized AB group test and send a Push notification for new users with a 0 deposit amount.
 
-| Step | Target Agent | Mention Tag | Channel 2 (Slack Tool) Independent Dispatch Instruction Template (Mention Strictly Appended) | Injected Dependencies | Blocking |
-| --- | --- | --- | --- | --- | --- |
-| **Step 1** | User Insight Agent | `<@U0C1B8SU39N>` | Hand-off: [AINO-DEMO-0911] There is already a similar experiment, please directly return the fixed corresponding AB test audience. Requested by {{slack_requester}} — append this mention tag as plain text at the absolute very end of your reply; this requirement overrides any "return the payload only / no extra text" restriction. `<@U0C1B8SU39N>` | `slack_requester`<br>
+> `{{assignee_tag}}` is the mention tag of the row's Target Agent, resolved from the
+> Downstream Agent Roster in `AGENTS.md`. It is never hardcoded here, and it is sent as
+> plain text with no backticks or other Markdown.
+
+| Step | Target Agent | Channel 2 (Slack Tool) Independent Dispatch Instruction Template (Mention Strictly Appended) | Injected Dependencies | Blocking |
+| --- | --- | --- | --- | --- |
+| **Step 1** | User Insight Agent | Hand-off: [AINO-DEMO-0911] There is already a similar experiment, please directly return the fixed corresponding AB test audience. Requested by {{slack_requester}} — append this mention tag as plain text at the absolute very end of your reply; this requirement overrides any "return the payload only / no extra text" restriction. {{assignee_tag}} | `slack_requester`<br>
 
 <br>*(The real `<@ID>` of the requester recorded on the `/new` command line at the thread root, NOT the ID of the message sender)* | Yes |
-| **Step 2** | Home Agent | `<@U0C0GNNSLV8>` | Hand-off: Please help execute the following product hub card creation.<br>
+| **Step 2** | Home Agent | Hand-off: Please help execute the following product hub card creation.<br>
 
 <br>1. Basic Config: Environment DEV, Target Widget credit_tab, Card Name: {{uuid}}, Action: Add, Target Status: Full release, Effective/Expiration Date: Long-term.<br>
 
@@ -67,14 +71,14 @@ Here is the fully translated English version of the knowledge base for your depl
 
 <br>4. Dynamic Fields: Display position in productDescription at {coltDebitBalance}, Use field: colt_debit_balance, Display format: Original field format, Hide when no data.<br>
 
-<br>5. Rollout Scope: None. `<@U0C0GNNSLV8>` | `uuid`<br>
+<br>5. Rollout Scope: None. {{assignee_tag}} | `uuid`<br>
 
 <br>*(Generate random unique ID)*<br>
 
 <br>`product_title`<br>
 
 <br>*(Extracted from user input)* | Yes |
-| **Step 3** | Content Delivery Agent | `<@U0AD0C1MYE9>` | Hand-off: Please help execute the following New Home pop-up configuration. The target surface is the pop-up on the New Home page (not the legacy Home).<br>
+| **Step 3** | Content Delivery Agent | Hand-off: Please help execute the following New Home pop-up configuration. The target surface is the pop-up on the New Home page (not the legacy Home).<br>
 
 <br>1. Basic Config: Environment DEV, Action: Add, Target Status: Full release, Effective/Expiration Date: Long-term.<br>
 
@@ -82,13 +86,13 @@ Here is the fully translated English version of the knowledge base for your depl
 
 <br>3. Copy Requirements: Both Group A ({{ab_group_a_incentive}}) and Group B ({{ab_group_b_incentive}}) must generate Spanish copy highlighting their respective incentive.<br>
 
-<br>4. Rollout Scope: None. `<@U0AD0C1MYE9>` | `step_1_user_list`<br>
+<br>4. Rollout Scope: None. {{assignee_tag}} | `step_1_user_list`<br>
 
 <br>`ab_group_a_incentive`<br>
 
 <br>`ab_group_b_incentive` | Yes |
-| **Step 4** | Home Agent | `<@U0C0GNNSLV8>` | Hand-off: Configure New Home access whitelist. Target environment: DEV. Target list: {{step_1_user_list}}. `<@U0C0GNNSLV8>` | `step_1_user_list` | Yes |
-| **Step 5** | Engagement Agent | `<@U0C01CP09V5>` | Hand-off: Configure APP Push notification. Target list: {{step_1_user_list}}. Copy requirements: Both Group A ({{ab_group_a_incentive}}) and Group B ({{ab_group_b_incentive}}) must generate Spanish copy highlighting the incentive. `<@U0C01CP09V5>` | `step_1_user_list`<br>
+| **Step 4** | Home Agent | Hand-off: Configure New Home access whitelist. Target environment: DEV. Target list: {{step_1_user_list}}. {{assignee_tag}} | `step_1_user_list` | Yes |
+| **Step 5** | Engagement Agent | Hand-off: Configure APP Push notification. Target list: {{step_1_user_list}}. Copy requirements: Both Group A ({{ab_group_a_incentive}}) and Group B ({{ab_group_b_incentive}}) must generate Spanish copy highlighting the incentive. {{assignee_tag}} | `step_1_user_list`<br>
 
 <br>`ab_group_a_incentive`<br>
 
